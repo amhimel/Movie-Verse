@@ -20,24 +20,17 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
 
   final List<IconData> icons = [
     LucideIcons.clapperboard, // Movies
-    LucideIcons.tv,           // TV Series
-    LucideIcons.heart,        // Favorite
+    LucideIcons.tv, // TV Series
+    LucideIcons.heart, // Favorite
   ];
 
-  final List<String> labels = [
-    "Movies",
-    "TV Series",
-    "Favorite",
-  ];
+  final List<String> labels = ["Movies", "TV Series", "Favorite"];
 
   // Add your actual screens here
   final List<Widget> screens = [
     MovieScreen(),
     TvSeriesScreen(),
     FavoriteScreen(),
-    // Center(child: Text("Movie Screen", style: TextStyle(color: Colors.white, fontSize: 22))),
-    // Center(child: Text("TV Series Screen", style: TextStyle(color: Colors.white, fontSize: 22))),
-    // Center(child: Text("Favorite Screen", style: TextStyle(color: Colors.white, fontSize: 22))),
   ];
 
   @override
@@ -46,38 +39,53 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
       appBar: CustomAppbar(
         title: Text("Hey, Himel"),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(
-              color: MyAppColors.searchIconButtonBackColor,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: IconButton(
-              icon: Icon(MyAppIcons.search, color: Colors.white),
-              onPressed: () {
-                // Action for search button
-              },
+          InkWell(
+            onTap: (){
+              // Action for search button
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                color: MyAppColors.searchIconButtonBackColor,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: IconButton(
+                icon: Icon(MyAppIcons.search, color: Colors.white),
+                onPressed: () {
+                  // Action for search button
+                },
+              ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(
-              color: MyAppColors.searchIconButtonBackColor,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: IconButton(
-              icon: Icon(MyAppIcons.profile, color: Colors.white),
-              onPressed: () {
-                // Action for search button
-              },
+          InkWell(
+            onTap: (){
+              // Action for profile button
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                color: MyAppColors.searchIconButtonBackColor,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: IconButton(
+                icon: Icon(MyAppIcons.profile, color: Colors.white),
+                onPressed: () {
+                  // Action for profile button
+                },
+              ),
             ),
           ),
         ],
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: MyAppColors.darkBackgroundColor,
       body: screens[selectedIndex], // Show selected screen
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        padding: const EdgeInsets.only(
+          top: 10,
+          left: 20,
+          right: 20,
+          bottom: 20,
+        ),
         child: Container(
           height: 70,
           decoration: BoxDecoration(
@@ -96,7 +104,10 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected ? Colors.red : Colors.transparent,
                     borderRadius: BorderRadius.circular(30),
@@ -116,8 +127,8 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
-                        )
-                      ]
+                        ),
+                      ],
                     ],
                   ),
                 ),

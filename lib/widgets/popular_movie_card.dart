@@ -13,13 +13,16 @@ class PopularMovieCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CachedImageWidget(
-          imageUrl: imageUrl,
-          width: 150,
-          height: 180,
-          fit: BoxFit.cover,
-          errorWidget: (_, __, ___) =>
-          const Icon(Icons.broken_image, size: 60, color: Colors.white),
+        Hero(
+          tag: 1,
+          child: CachedImageWidget(
+            imageUrl: imageUrl,
+            width: 150,
+            height: 180,
+            fit: BoxFit.cover,
+            errorWidget: (_, __, ___) =>
+            const Icon(Icons.broken_image, size: 60, color: Colors.white),
+          ),
         ),
         Text(title,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.white),),
       ],

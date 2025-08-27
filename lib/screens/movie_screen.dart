@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:movie_verse/constants/my_app_colors.dart';
-import 'package:movie_verse/widgets/custom_appbar.dart';
 import 'package:movie_verse/widgets/popular_movie_card.dart';
-import '../constants/my_app_icons.dart';
+import '../models/movie_model.dart';
+import '../services/init_getIt.dart';
+import '../services/navigation_service.dart';
 import '../widgets/movie_promo_card.dart';
 
 class MovieScreen extends StatefulWidget {
@@ -19,60 +20,89 @@ class _MovieScreenState extends State<MovieScreen> {
   Timer? _autoPlayTimer;
   int _currentPage = 0;
 
-  // Sample movie data (replace with TMDb API)
-  final List<Map<String, String>> movies = [
-    {
-      "title": "Evil Dead Rise",
-      "poster":
+  // ✅ Use MovieModel list instead of Map
+  final List<MovieModel> movies = [
+    MovieModel(
+      adult: false,
+      backdropPath: "",
+      genreIds: [27],
+      id: 1,
+      originalLanguage: "en",
+      originalTitle: "Evil Dead Rise",
+      overview: "Some horror movie description...",
+      popularity: 50.0,
+      posterPath:
       "https://image.tmdb.org/t/p/w500/5ik4ATKmNtmJU6AYD0bLm56BCVM.jpg",
-      "language": "ENGLISH",
-      "genre": "HORROR",
-      "format": "2D · 3D · 4DX",
-    },
-    {
-      "title": "Oppenheimer",
-      "poster":
-      "https://image.tmdb.org/t/p/w500/bAFmcr7MEzC3yjuMj0Xy8jbKc6E.jpg",
-      "language": "ENGLISH",
-      "genre": "DRAMA",
-      "format": "IMAX · 2D",
-    },
-    {
-      "title": "Spider-Man: No Way Home",
-      "poster":
+      releaseDate: "2023-04-01",
+      title: "Evil Dead Rise",
+      video: false,
+      voteAverage: 7.0,
+      voteCount: 200,
+    ),
+    MovieModel(
+      adult: false,
+      backdropPath: "",
+      genreIds: [28],
+      id: 3,
+      originalLanguage: "en",
+      originalTitle: "Spider-Man: No Way Home",
+      overview: "Spider-Man multiverse story...",
+      popularity: 100.0,
+      posterPath:
       "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
-      "language": "ENGLISH",
-      "genre": "ACTION",
-      "format": "2D · 3D · IMAX",
-    },
-    {
-      "title": "Avatar: The Way of Water",
-      "poster":
+      releaseDate: "2021-12-15",
+      title: "Spider-Man: No Way Home",
+      video: false,
+      voteAverage: 8.2,
+      voteCount: 1000,
+    ),
+    MovieModel(
+      adult: false,
+      backdropPath: "",
+      genreIds: [878],
+      id: 4,
+      originalLanguage: "en",
+      originalTitle: "Avatar: The Way of Water",
+      overview: "Return to Pandora...",
+      popularity: 120.0,
+      posterPath:
       "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
-      "language": "ENGLISH",
-      "genre": "SCI-FI",
-      "format": "2D · 3D · 4DX",
-    },
-    {
-      "title": "The Batman",
-      "poster":
+      releaseDate: "2022-12-16",
+      title: "Avatar: The Way of Water",
+      video: false,
+      voteAverage: 7.9,
+      voteCount: 800,
+    ),
+    MovieModel(
+      adult: false,
+      backdropPath: "",
+      genreIds: [53],
+      id: 5,
+      originalLanguage: "en",
+      originalTitle: "The Batman",
+      overview: "Batman faces Riddler...",
+      popularity: 110.0,
+      posterPath:
       "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
-      "language": "ENGLISH",
-      "genre": "THRILLER",
-      "format": "2D · 3D",
-    },
+      releaseDate: "2022-03-04",
+      title: "The Batman",
+      video: false,
+      voteAverage: 8.0,
+      voteCount: 700,
+    ),
   ];
-  late List<Map<String, String>> randomMovies;
+
+  late List<MovieModel> randomMovies;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.9);
 
-    // Shuffle the movies so order is random
-    randomMovies = List<Map<String, String>>.from(movies)..shuffle(Random());
+    // ✅ Shuffle movies
+    randomMovies = List<MovieModel>.from(movies)..shuffle(Random());
 
-    // Start auto-play
+    // ✅ Auto-play
     _autoPlayTimer = Timer.periodic(const Duration(seconds: 8), (timer) {
       if (_pageController.hasClients) {
         _currentPage++;
@@ -101,6 +131,7 @@ class _MovieScreenState extends State<MovieScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // ✅ Promo Movies Carousel
             SizedBox(
               height: 353,
               child: PageView.builder(
@@ -114,22 +145,21 @@ class _MovieScreenState extends State<MovieScreen> {
                       vertical: 12,
                     ),
                     child: MoviePromoCard(
-                      posterUrl: movie["poster"]!,
-                      title: movie["title"]!,
-                      language: movie["language"]!,
-                      genre: movie["genre"]!,
-                      format: movie["format"]!,
+                      movieModel: movie,
                       onWatchTrailer: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Watch Trailer: ${movie["title"]}"),
-                          ),
-                        );
+                        getIt<NavigationService>().showSnackBar(Text("Watch Trailer: ${movie.title}"));
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(
+                        //     content: Text("Watch Trailer: ${movie.title}"),
+                        //   ),
+                        // );
                       },
                       onBook: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Booked: ${movie["title"]}")),
-                        );
+
+                        getIt<NavigationService>().showSnackBar(Text("Booked: ${movie.title}"));
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(content: Text("Booked: ${movie.title}")),
+                        // );
                       },
                     ),
                   );
@@ -137,44 +167,46 @@ class _MovieScreenState extends State<MovieScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            // Recommended Movies
+
+            // ✅ Recommended Movies
             Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Recommended Movies",style: TextStyle(fontSize: 16),),
+                      Text("Recommended Movies",
+                          style: TextStyle(fontSize: 16)),
                       Row(
                         children: [
-                          Text("See All",style: TextStyle(color: MyAppColors.darkElevatedButtonColor),),
-                          Icon(Icons.arrow_forward,color: MyAppColors.darkElevatedButtonColor,)
-
+                          Text("See All",
+                              style: TextStyle(
+                                  color: MyAppColors.darkElevatedButtonColor)),
+                          Icon(Icons.arrow_forward,
+                              color: MyAppColors.darkElevatedButtonColor),
                         ],
                       ),
-
                     ],
                   ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  height: 250,
+                  height: 260,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: movies.length,
-                    itemBuilder: (context, int index) {
+                    itemBuilder: (context, index) {
                       final popularMovie = movies[index];
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 2), // Small gap between items
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 3, vertical: 2),
                         child: SizedBox(
-                          width: 140, // Fixed width for each card
+                          width: 160,
                           child: PopularMovieCardWidget(
-                            imageUrl: popularMovie["poster"]!,
-                            title: popularMovie["title"]!,
+                            imageUrl: popularMovie.posterPath ?? '',
+                            title: popularMovie.title ?? '',
                           ),
                         ),
                       );
@@ -183,8 +215,6 @@ class _MovieScreenState extends State<MovieScreen> {
                 )
               ],
             ),
-
-
           ],
         ),
       ),

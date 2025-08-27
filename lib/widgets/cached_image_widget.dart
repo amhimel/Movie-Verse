@@ -34,18 +34,18 @@ class CachedImageWidget extends StatelessWidget {
           errorWidget: errorWidget,
         ),
         Positioned(
-          right: 10,
-          bottom: 50,
+          right: 5,
+          bottom: 20,
           child: ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               backgroundColor: MyAppColors.darkSecondaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(50),
               ),
             ),
-            child: Icon(Icons.play_arrow, size: 18, color: Colors.white),
+            child: Icon(Icons.play_arrow, size: 24, color: Colors.white),
           ),
         ),
       ],
