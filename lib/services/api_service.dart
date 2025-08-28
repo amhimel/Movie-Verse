@@ -10,7 +10,7 @@ class ApiService {
 
   Future<List<MovieModel>> fetchMovies({int page = 1}) async {
     final url = Uri.parse(
-      "${ApiConstants.baseUrl}/movie/popular?language=en-US&page=1",
+      "${ApiConstants.baseUrl}/movie/popular?language=en-US&$page",
     );
     final response = await http.get(
       url,
@@ -30,6 +30,31 @@ class ApiService {
       throw Exception("Failed to load movies");
     }
   }
+  Future<List<MovieModel>> fetchTvShows({int page = 1}) async {
+    final url = Uri.parse(
+      "${ApiConstants.baseUrl}/movie/popular?language=en-US&$page",
+    );
+    final response = await http.get(
+      url,
+      headers: ApiConstants.headers,
+    );
+    if (response.statusCode == 200) {
+      // Handle successful response
+      final data = jsonDecode(response.body);
+      return List.from(data['results'])
+          .map((elements) => MovieModel.fromJson(elements))
+          .toList();
+      // If you want to return a single MovieModel, you can modify this accordingly.
+      debugPrint("Movies fetched successfully: $data");
+    } else {
+      // Handle error response
+      debugPrint("Failed to fetch movies: ${response.statusCode}");
+      throw Exception("Failed to load movies");
+    }
+  }
+
+
+
   Future<List<MovieModel>> fetchTrendingMovies() async {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/trending/movie/day?language=en-US",
@@ -53,9 +78,32 @@ class ApiService {
   }
 
   // for get genres
-  Future<List<MovieGenres>> fetchGenres() async {
+  Future<List<MovieGenres>> fetchMoviesGenres() async {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/genre/movie/list?language=en",
+    );
+    final response = await http.get(
+      url,
+      headers: ApiConstants.headers,
+    );
+    if (response.statusCode == 200) {
+      // Handle successful response
+      final data = jsonDecode(response.body);
+      return List.from(data['genres'])
+          .map((elements) => MovieGenres.fromJson(elements))
+          .toList();
+      // If you want to return a single MovieModel, you can modify this accordingly.
+      debugPrint("Movies fetched successfully: $data");
+    } else {
+      // Handle error response
+      debugPrint("Failed to fetch movie genres: ${response.statusCode}");
+      throw Exception("Failed to load movie genres");
+    }
+  }
+
+  Future<List<MovieGenres>> fetchTvGenres() async {
+    final url = Uri.parse(
+      "${ApiConstants.baseUrl}/genre/tv/list?language=en",
     );
     final response = await http.get(
       url,

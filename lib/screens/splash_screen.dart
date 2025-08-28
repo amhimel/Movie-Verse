@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_verse/provider/tv_shows_provider.dart';
 import 'package:movie_verse/widgets/custom_bottom_nav.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,10 @@ class SplashScreen extends StatelessWidget {
       final movieProvider = Provider.of<MovieProvider>(context, listen: false);
       await movieProvider.getMovies();
       await movieProvider.getTrendingMovies();
+
+      if (!context.mounted) return;
+      final tvShowProvider = Provider.of<TvShowsProvider>(context, listen: false);
+      await tvShowProvider.getTvShows();
 
       if (!context.mounted) return;
       final favProvider = Provider.of<FavoriteProvider>(context, listen: false);

@@ -10,12 +10,18 @@ class MoviesRepo {
   Future<List<MovieModel>> fetchMovies({int page = 1}) async {
     return await _apiService.fetchMovies(page: page);
   }
+  Future<List<MovieModel>> fetchTvShows({int page = 1}) async {
+    return await _apiService.fetchTvShows(page: page);
+  }
 
   Future<List<MovieModel>> fetchTrendingMovies() async {
     return await _apiService.fetchTrendingMovies();
   }
 
-  Future<List<MovieGenres>> fetchGenres() async {
-    return await _apiService.fetchGenres();
+  Future<List<MovieGenres>> fetchMoviesGenres() async {
+    return await _apiService.fetchMoviesGenres();
+  }
+  Future<List<MovieGenres>> fetchTvGenres() async {
+    return await _apiService.fetchTvGenres();
   }
 }
