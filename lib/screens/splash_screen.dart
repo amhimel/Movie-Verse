@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_verse/widgets/custom_bottom_nav.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/favorite_provider.dart';
 import '../provider/movie_provider.dart';
 import '../services/init_getIt.dart';
 import '../services/navigation_service.dart';
@@ -18,9 +19,9 @@ class SplashScreen extends StatelessWidget {
       await movieProvider.getMovies();
       await movieProvider.getTrendingMovies();
 
-      // if (!context.mounted) return;
-      // final favProvider = Provider.of<FavoriteProvider>(context, listen: false);
-      // await favProvider.loadFavorites();
+      if (!context.mounted) return;
+      final favProvider = Provider.of<FavoriteProvider>(context, listen: false);
+      await favProvider.loadFavorites();
 
     });
   }

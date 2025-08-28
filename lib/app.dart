@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_verse/provider/favorite_provider.dart';
 import 'package:movie_verse/provider/movie_provider.dart';
 import 'package:movie_verse/screens/splash_screen.dart';
 import 'package:movie_verse/services/init_getIt.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<MovieProvider>(create: (_) => MovieProvider()),
+        ChangeNotifierProvider<FavoriteProvider>(create: (_) => FavoriteProvider()),
       ],
       child: MaterialApp(
         navigatorKey: getIt<NavigationService>().navigatorKey,

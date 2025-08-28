@@ -32,9 +32,11 @@ class MoviePromoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final moviesModelProvider = Provider.of<MovieModel>(context);
     return InkWell(
-      onTap: () async{
+      onTap: () async {
         log("detail clicked");
-        getIt<NavigationService>().navigate(MovieDetailScreen(movieModel: moviesModelProvider));
+        getIt<NavigationService>().navigate(
+          MovieDetailScreen(movieModel: moviesModelProvider),
+        );
       },
       child: Card(
         color: Colors.black,
@@ -47,14 +49,18 @@ class MoviePromoCard extends StatelessWidget {
             Hero(
               tag: "movie_${moviesModelProvider.id}",
               child: CachedNetworkImage(
-                imageUrl: '${MyAppConstants.imagePath}${moviesModelProvider.backdropPath!}',
+                imageUrl:
+                    '${MyAppConstants.imagePath}${moviesModelProvider.backdropPath!}',
                 height: double.infinity,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 placeholder: (_, __) =>
                     const Center(child: CircularProgressIndicator()),
-                errorWidget: (_, __, ___) =>
-                    const Icon(Icons.broken_image, size: 60, color: Colors.white),
+                errorWidget: (_, __, ___) => const Icon(
+                  Icons.broken_image,
+                  size: 60,
+                  color: Colors.white,
+                ),
               ),
             ),
 
@@ -68,7 +74,11 @@ class MoviePromoCard extends StatelessWidget {
                   "Watch Trailer",
                   style: TextStyle(color: Colors.white),
                 ),
-                icon: const Icon(Icons.play_arrow, size: 18, color: Colors.white),
+                icon: const Icon(
+                  Icons.play_arrow,
+                  size: 18,
+                  color: Colors.white,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: MyAppColors.darkSecondaryColor,
                   padding: const EdgeInsets.symmetric(
@@ -156,7 +166,7 @@ class MoviePromoCard extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            FavoriteBtnWidget(),
+                            FavoriteBtnWidget(movieModel: moviesModelProvider),
                           ],
                         ),
                         const SizedBox(height: 6),

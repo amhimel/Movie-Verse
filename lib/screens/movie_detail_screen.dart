@@ -3,6 +3,7 @@ import '../constants/my_app_constants.dart';
 import '../models/movie_model.dart';
 import '../widgets/cached_image_widget.dart';
 import '../widgets/favorite_btn_widget.dart';
+import '../widgets/genres_widget.dart';
 
 class MovieDetailScreen extends StatelessWidget {
   const MovieDetailScreen({super.key, required this.movieModel});
@@ -78,7 +79,7 @@ class MovieDetailScreen extends StatelessWidget {
                                     ],
                                   ),
                                   const SizedBox(height: 10),
-                                  //GenresListWidget(movieModel: movieModel,),
+                                  GenresListWidget(movieModel: movieModel,),
                                   const SizedBox(height: 15),
                                   Text(
                                     movieModel.overview!,
@@ -103,7 +104,7 @@ class MovieDetailScreen extends StatelessWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(6.0),
-                              child: FavoriteBtnWidget(), //FavoriteBtnWidget(movieModel: movieModel,),
+                              child: FavoriteBtnWidget(movieModel: movieModel,),
                             ),
                           ),
                         )
