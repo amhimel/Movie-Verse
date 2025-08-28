@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:movie_verse/constants/my_app_colors.dart';
 import 'package:movie_verse/widgets/popular_movie_card.dart';
+import 'package:provider/provider.dart';
 import '../models/movie_model.dart';
+import '../provider/movie_provider.dart';
 import '../services/init_getIt.dart';
 import '../services/navigation_service.dart';
 import '../widgets/movie_promo_card.dart';
@@ -20,91 +22,16 @@ class _MovieScreenState extends State<MovieScreen> {
   Timer? _autoPlayTimer;
   int _currentPage = 0;
 
-  // ✅ Use MovieModel list instead of Map
-  final List<MovieModel> movies = [
-    MovieModel(
-      adult: false,
-      backdropPath: "",
-      genreIds: [27],
-      id: 1,
-      originalLanguage: "en",
-      originalTitle: "Evil Dead Rise",
-      overview: "Some horror movie description...",
-      popularity: 50.0,
-      posterPath:
-      "https://image.tmdb.org/t/p/w500/5ik4ATKmNtmJU6AYD0bLm56BCVM.jpg",
-      releaseDate: "2023-04-01",
-      title: "Evil Dead Rise",
-      video: false,
-      voteAverage: 7.0,
-      voteCount: 200,
-    ),
-    MovieModel(
-      adult: false,
-      backdropPath: "",
-      genreIds: [28],
-      id: 3,
-      originalLanguage: "en",
-      originalTitle: "Spider-Man: No Way Home",
-      overview: "Spider-Man multiverse story...",
-      popularity: 100.0,
-      posterPath:
-      "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
-      releaseDate: "2021-12-15",
-      title: "Spider-Man: No Way Home",
-      video: false,
-      voteAverage: 8.2,
-      voteCount: 1000,
-    ),
-    MovieModel(
-      adult: false,
-      backdropPath: "",
-      genreIds: [878],
-      id: 4,
-      originalLanguage: "en",
-      originalTitle: "Avatar: The Way of Water",
-      overview: "Return to Pandora...",
-      popularity: 120.0,
-      posterPath:
-      "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
-      releaseDate: "2022-12-16",
-      title: "Avatar: The Way of Water",
-      video: false,
-      voteAverage: 7.9,
-      voteCount: 800,
-    ),
-    MovieModel(
-      adult: false,
-      backdropPath: "",
-      genreIds: [53],
-      id: 5,
-      originalLanguage: "en",
-      originalTitle: "The Batman",
-      overview: "Batman faces Riddler...",
-      popularity: 110.0,
-      posterPath:
-      "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
-      releaseDate: "2022-03-04",
-      title: "The Batman",
-      video: false,
-      voteAverage: 8.0,
-      voteCount: 700,
-    ),
-  ];
-
-  late List<MovieModel> randomMovies;
+   List<MovieModel> randomMovies = [];
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.9);
 
-    // ✅ Shuffle movies
-    randomMovies = List<MovieModel>.from(movies)..shuffle(Random());
-
-    // ✅ Auto-play
+    // start autoplay
     _autoPlayTimer = Timer.periodic(const Duration(seconds: 8), (timer) {
-      if (_pageController.hasClients) {
+      if (_pageController.hasClients && randomMovies.isNotEmpty) {
         _currentPage++;
         if (_currentPage >= randomMovies.length) {
           _currentPage = 0;
@@ -131,37 +58,77 @@ class _MovieScreenState extends State<MovieScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ✅ Promo Movies Carousel
+            // ✅ Trending Movies Carousel
             SizedBox(
               height: 353,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: randomMovies.length,
-                itemBuilder: (context, index) {
-                  final movie = randomMovies[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 12,
-                    ),
-                    child: MoviePromoCard(
-                      movieModel: movie,
-                      onWatchTrailer: () {
-                        getIt<NavigationService>().showSnackBar(Text("Watch Trailer: ${movie.title}"));
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   SnackBar(
-                        //     content: Text("Watch Trailer: ${movie.title}"),
-                        //   ),
-                        // );
-                      },
-                      onBook: () {
+              child: Consumer(
+                builder: (context, MovieProvider trendingMovieProvider, child) {
+                  if (trendingMovieProvider.moviesTrendList.isNotEmpty &&
+                      randomMovies.isEmpty) {
+                    randomMovies = List<MovieModel>.from(
+                      trendingMovieProvider.moviesTrendList,
+                    )..shuffle(Random());
+                    debugPrint('Randomized movies: $randomMovies');
+                  }
 
-                        getIt<NavigationService>().showSnackBar(Text("Booked: ${movie.title}"));
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   SnackBar(content: Text("Booked: ${movie.title}")),
-                        // );
-                      },
-                    ),
+                  if (randomMovies.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+
+                  return Consumer(
+                    builder: (context, MovieProvider movieProvider, child) {
+                      if (movieProvider.isLoading &&
+                          movieProvider.moviesTrendList.isEmpty) {
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      } else if (movieProvider.fetchMoviesError.isNotEmpty) {
+                        return const Center(child: Text('An error found'));
+                      }
+
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (!movieProvider.isLoading &&
+                              scrollInfo.metrics.pixels ==
+                                  scrollInfo.metrics.maxScrollExtent) {
+                            debugPrint('Fetch more movies');
+                            movieProvider.getTrendingMovies();
+                            return true;
+                          }
+                          return false;
+                        },
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: movieProvider.moviesTrendList.length,
+                          itemBuilder: (context, index) {
+                            final movie = randomMovies[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 12,
+                              ),
+                              child: ChangeNotifierProvider.value(
+                                value: movie,
+                                child: MoviePromoCard(
+                                  onWatchTrailer: () {
+                                    getIt<NavigationService>().showSnackBar(
+                                      Text("Watch Trailer: ${movie.title}"),
+                                    );
+                                  },
+                                  onBook: () {
+                                    getIt<NavigationService>().showSnackBar(
+                                      Text("Booked: ${movie.title}"),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -177,15 +144,22 @@ class _MovieScreenState extends State<MovieScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Recommended Movies",
-                          style: TextStyle(fontSize: 16)),
+                      Text(
+                        "Recommended Movies",
+                        style: TextStyle(fontSize: 16),
+                      ),
                       Row(
                         children: [
-                          Text("See All",
-                              style: TextStyle(
-                                  color: MyAppColors.darkElevatedButtonColor)),
-                          Icon(Icons.arrow_forward,
-                              color: MyAppColors.darkElevatedButtonColor),
+                          Text(
+                            "See All",
+                            style: TextStyle(
+                              color: MyAppColors.darkElevatedButtonColor,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: MyAppColors.darkElevatedButtonColor,
+                          ),
                         ],
                       ),
                     ],
@@ -194,25 +168,52 @@ class _MovieScreenState extends State<MovieScreen> {
                 const SizedBox(height: 10),
                 SizedBox(
                   height: 260,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: movies.length,
-                    itemBuilder: (context, index) {
-                      final popularMovie = movies[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 3, vertical: 2),
-                        child: SizedBox(
-                          width: 160,
-                          child: PopularMovieCardWidget(
-                            imageUrl: popularMovie.posterPath ?? '',
-                            title: popularMovie.title ?? '',
-                          ),
+                  child: Consumer(
+                    builder: (context, MovieProvider movieProvider, child) {
+                      if (movieProvider.isLoading &&
+                          movieProvider.moviesList.isEmpty) {
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      } else if (movieProvider.fetchMoviesError.isNotEmpty) {
+                        return const Center(child: Text('An error found'));
+                      }
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (!movieProvider.isLoading &&
+                              scrollInfo.metrics.pixels ==
+                                  scrollInfo.metrics.maxScrollExtent) {
+                            debugPrint('Fetch more movies');
+                            movieProvider.getMovies();
+                            return true;
+                          }
+                          return false;
+                        },
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: movieProvider.moviesList.length,
+                          itemBuilder: (context, index) {
+                            final popularMovie =
+                                movieProvider.moviesList[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 3,
+                                vertical: 2,
+                              ),
+                              child: SizedBox(
+                                width: 160,
+                                child: ChangeNotifierProvider.value(
+                                  value: popularMovie,
+                                  child: PopularMovieCardWidget(),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },
                   ),
-                )
+                ),
               ],
             ),
           ],

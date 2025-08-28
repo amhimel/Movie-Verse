@@ -83,6 +83,9 @@ class MyAppTheme {
         ),
       ),
     ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: MyAppColors.progressIndicatorColor,
+      )
 
   );
 }

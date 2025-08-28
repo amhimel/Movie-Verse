@@ -6,6 +6,7 @@ class MyAppColors {
   static const Color darkSecondaryColor = Color(0xFF1F1F1F);
   static const Color darkBackgroundColor = Color(0xFF121011);
   static const Color darkTextColor = Color(0xFFFFFFFF);
+  static const Color progressIndicatorColor = Color(0xFFFFFFFF);
   static const Color darkErrorColor = Color(0xFFCF6679);
   static const Color darkSuccessColor = Color(0xFF03DAC5);
   static const Color darkElevatedButtonColor = Color(0xFFEB2F3D);

@@ -16,12 +16,14 @@ class MovieDetailScreen extends StatelessWidget {
         child: Stack(
           children: [
             Hero(
-              tag: movieModel.id!,
+              tag: "movie_${movieModel.id}",
               child: SizedBox(
                 height: size.height * 0.45,
                 width: double.infinity,
                 child: CachedImageWidget(
-                  imageUrl:  movieModel.posterPath!,//'${MyAppConstants.imagePath}${movieModel.backdropPath!}',
+                  height: double.infinity,
+                  width: double.infinity,
+                  imageUrl: '${MyAppConstants.imagePath}${movieModel.backdropPath!}',//'${MyAppConstants.imagePath}${movieModel.backdropPath!}',
                   errorWidget: (context, url, error) =>
                   const Icon(Icons.error, size: 50, color: Colors.red),
                   fit: BoxFit.cover,

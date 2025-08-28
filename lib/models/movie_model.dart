@@ -1,4 +1,6 @@
-class MovieModel {
+import 'package:flutter/cupertino.dart';
+
+class MovieModel with ChangeNotifier {
   bool? adult;
   String? backdropPath;
   List<int>? genreIds;

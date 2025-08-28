@@ -11,6 +11,10 @@ class MoviesRepo {
     return await _apiService.fetchMovies(page: page);
   }
 
+  Future<List<MovieModel>> fetchTrendingMovies() async {
+    return await _apiService.fetchTrendingMovies();
+  }
+
   Future<List<MovieGenres>> fetchGenres() async {
     return await _apiService.fetchGenres();
   }

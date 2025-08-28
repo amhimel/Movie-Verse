@@ -6,7 +6,9 @@ import 'package:movie_verse/constants/my_app_colors.dart';
 import 'package:movie_verse/repositories/movies_repo.dart';
 import 'package:movie_verse/screens/movie_detail_screen.dart';
 import 'package:movie_verse/services/api_service.dart';
-
+import 'package:movie_verse/widgets/genres_widget.dart';
+import 'package:provider/provider.dart';
+import '../constants/my_app_constants.dart';
 import '../constants/my_app_icons.dart';
 import '../models/movie_model.dart';
 import '../services/init_getIt.dart';
@@ -15,25 +17,24 @@ import 'favorite_btn_widget.dart';
 import 'gradient_button.dart';
 
 class MoviePromoCard extends StatelessWidget {
-  final MovieModel movieModel;
+  //final MovieModel movieModel;
   final VoidCallback? onWatchTrailer;
   final VoidCallback? onBook;
 
   const MoviePromoCard({
     super.key,
-    required this.movieModel,
+    //required this.movieModel,
     this.onWatchTrailer,
     this.onBook,
   });
 
   @override
   Widget build(BuildContext context) {
+    final moviesModelProvider = Provider.of<MovieModel>(context);
     return InkWell(
       onTap: () async{
         log("detail clicked");
-        final List<MovieModel> movies = await getIt<MoviesRepo>().fetchMovies();
-        debugPrint("Movies fetched successfully: $movies");
-        //getIt<NavigationService>().navigate(MovieDetailScreen(movieModel: movieModel));
+        getIt<NavigationService>().navigate(MovieDetailScreen(movieModel: moviesModelProvider));
       },
       child: Card(
         color: Colors.black,
@@ -44,9 +45,9 @@ class MoviePromoCard extends StatelessWidget {
           children: [
             // Poster
             Hero(
-              tag: movieModel.id!,
+              tag: "movie_${moviesModelProvider.id}",
               child: CachedNetworkImage(
-                imageUrl: movieModel.posterPath!,
+                imageUrl: '${MyAppConstants.imagePath}${moviesModelProvider.backdropPath!}',
                 height: double.infinity,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -112,7 +113,7 @@ class MoviePromoCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            movieModel.title!,
+                            moviesModelProvider.title!,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -121,14 +122,7 @@ class MoviePromoCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "A · ${movieModel.originalLanguage}",
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 13,
-                            ),
-                          ),
-                          Text(
-                            "Genres",
+                            "A · ${moviesModelProvider.originalLanguage}",
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 13,
@@ -178,7 +172,7 @@ class MoviePromoCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              movieModel.releaseDate!,
+                              moviesModelProvider.releaseDate!,
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
