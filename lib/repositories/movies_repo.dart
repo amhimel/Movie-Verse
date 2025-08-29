@@ -24,4 +24,10 @@ class MoviesRepo {
   Future<List<MovieGenres>> fetchTvGenres() async {
     return await _apiService.fetchTvGenres();
   }
+
+  Future<String?> fetchMovieTrailer(int movieId) async {
+    return await _apiService.fetchMovieTrailer(movieId);
+  }
+
+
 }

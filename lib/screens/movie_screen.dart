@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:movie_verse/constants/my_app_colors.dart';
+import 'package:movie_verse/widgets/video_play_dialog.dart';
 import 'package:movie_verse/widgets/popular_movie_card.dart';
 import 'package:provider/provider.dart';
 import '../models/movie_model.dart';
@@ -22,7 +23,7 @@ class _MovieScreenState extends State<MovieScreen> {
   Timer? _autoPlayTimer;
   int _currentPage = 0;
 
-   List<MovieModel> randomMovies = [];
+  List<MovieModel> randomMovies = [];
 
   @override
   void initState() {
@@ -112,10 +113,23 @@ class _MovieScreenState extends State<MovieScreen> {
                               child: ChangeNotifierProvider.value(
                                 value: movie,
                                 child: MoviePromoCard(
-                                  onWatchTrailer: () {
-                                    getIt<NavigationService>().showSnackBar(
-                                      Text("Watch Trailer: ${movie.title}"),
-                                    );
+                                  onWatchTrailer: () async {
+                                    // getIt<NavigationService>().showSnackBar(
+                                    //   Text("Watch Trailer: ${movie.title}"),
+                                    // );
+                                    final videoId = await movieProvider
+                                        .getMovieTrailer(movie.id!);
+                                    if (videoId != null) {
+                                      getIt<NavigationService>().navigate(
+                                        VideoPlayDialog(videoId: videoId),
+                                      );
+                                    } else {
+                                      getIt<NavigationService>().showSnackBar(
+                                        const Text(
+                                          "No trailer available for this movie",
+                                        ),
+                                      );
+                                    }
                                   },
                                   onBook: () {
                                     getIt<NavigationService>().showSnackBar(
@@ -195,6 +209,7 @@ class _MovieScreenState extends State<MovieScreen> {
                           itemBuilder: (context, index) {
                             final popularMovie =
                                 movieProvider.moviesList[index];
+
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 3,
@@ -204,7 +219,8 @@ class _MovieScreenState extends State<MovieScreen> {
                                 width: 160,
                                 child: ChangeNotifierProvider.value(
                                   value: popularMovie,
-                                  child: PopularMovieCardWidget(),
+                                  child: PopularMovieCardWidget(
+                                  ),
                                 ),
                               ),
                             );

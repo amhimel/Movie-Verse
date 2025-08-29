@@ -11,6 +11,7 @@ class CachedImageWidget extends StatelessWidget {
     this.height,
     this.fit,
     required this.errorWidget,
+    //required this.videoId,
   });
 
   final String imageUrl;
@@ -18,6 +19,7 @@ class CachedImageWidget extends StatelessWidget {
   final double? height;
   final BoxFit? fit;
   final Widget Function(BuildContext context, String url, dynamic error) errorWidget;
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +35,32 @@ class CachedImageWidget extends StatelessWidget {
           imageUrl: imageUrl,
           errorWidget: errorWidget,
         ),
+
+        // Watch Trailer button
         Positioned(
-          right: 5,
-          bottom: 20,
-          child: ElevatedButton(
-            onPressed: () {},
+          right: 10,
+          bottom: 60,
+          child: ElevatedButton.icon(
+            onPressed: (){},
+            label: const Text(
+              "Watch Trailer",
+              style: TextStyle(color: Colors.white),
+            ),
+            icon: const Icon(
+              Icons.play_arrow,
+              size: 18,
+              color: Colors.white,
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: MyAppColors.darkSecondaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: Icon(Icons.play_arrow, size: 24, color: Colors.white),
           ),
         ),
       ],

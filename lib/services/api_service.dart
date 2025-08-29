@@ -53,6 +53,36 @@ class ApiService {
     }
   }
 
+  Future<String?> fetchMovieTrailer(int movieId) async {
+    final url = Uri.parse(
+      "${ApiConstants.baseUrl}/movie/$movieId/videos?language=en-US",
+    );
+    final response = await http.get(
+      url,
+      headers: ApiConstants.headers,
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // TMDb returns multiple videos, we filter for YouTube trailers
+      final results = data['results'] as List<dynamic>;
+      final trailer = results.firstWhere(
+            (v) => v['site'] == 'YouTube' && v['type'] == 'Trailer',
+        orElse: () => null,
+      );
+
+      if (trailer != null) {
+        final key = trailer['key']; // YouTube video key
+        return key; // return only videoId instead of full URL
+      }
+      return null;
+    } else {
+      throw Exception("Failed to load trailer");
+    }
+  }
+
+
 
 
   Future<List<MovieModel>> fetchTrendingMovies() async {

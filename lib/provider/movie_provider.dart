@@ -70,4 +70,10 @@ class MovieProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<String?> getMovieTrailer(int movieId) async {
+    return await _moviesRepository.fetchMovieTrailer(movieId);
+  }
+
+
 }

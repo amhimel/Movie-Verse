@@ -1,35 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:movie_verse/screens/movie_detail_screen.dart';
+import 'package:movie_verse/widgets/video_play_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/my_app_constants.dart';
 import '../constants/my_app_icons.dart';
 import '../models/movie_model.dart';
+import '../services/init_getIt.dart';
+import '../services/navigation_service.dart';
 import 'cached_image_widget.dart';
 
 class PopularMovieCardWidget extends StatelessWidget {
-  const PopularMovieCardWidget({super.key, /* required this.imageUrl, required this.title */});
-  // final String imageUrl;
-  // final String title;
+  const PopularMovieCardWidget({super.key});
 
 
   @override
   Widget build(BuildContext context) {
     final moviesModelProvider = Provider.of<MovieModel>(context);
-    return Column(
-      children: [
-        Hero(
-          tag: "movie_${moviesModelProvider.id}",
-          child: CachedImageWidget(
-            imageUrl: '${MyAppConstants.imagePath}${moviesModelProvider.backdropPath!}',
-            width: 150,
-            height: 180,
-            fit: BoxFit.cover,
-            errorWidget: (_, __, ___) =>
-            const Icon(Icons.broken_image, size: 60, color: Colors.white),
+    return InkWell(
+      onTap: (){
+        getIt<NavigationService>().navigate(MovieDetailScreen(movieModel: moviesModelProvider));
+      },
+      child: Column(
+        children: [
+          Hero(
+            tag: "movie_${moviesModelProvider.id}",
+            child: CachedImageWidget(
+              imageUrl: '${MyAppConstants.imagePath}${moviesModelProvider.backdropPath!}',
+              width: 150,
+              height: 180,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) =>
+              const Icon(Icons.broken_image, size: 60, color: Colors.white),
+            ),
           ),
-        ),
-        Text(moviesModelProvider.title!,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.white),),
-      ],
+
+          Text(moviesModelProvider.title!,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.white),),
+        ],
+      ),
     );
   }
 }

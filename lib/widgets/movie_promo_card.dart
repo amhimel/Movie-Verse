@@ -17,13 +17,11 @@ import 'favorite_btn_widget.dart';
 import 'gradient_button.dart';
 
 class MoviePromoCard extends StatelessWidget {
-  //final MovieModel movieModel;
   final VoidCallback? onWatchTrailer;
   final VoidCallback? onBook;
 
   const MoviePromoCard({
     super.key,
-    //required this.movieModel,
     this.onWatchTrailer,
     this.onBook,
   });
