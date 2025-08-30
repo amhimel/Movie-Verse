@@ -7,21 +7,17 @@ import '../models/movie_genres.dart';
 import '../models/movie_model.dart';
 
 class ApiService {
-
   Future<List<MovieModel>> fetchMovies({int page = 1}) async {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/movie/popular?language=en-US&$page",
     );
-    final response = await http.get(
-      url,
-      headers: ApiConstants.headers,
-    );
+    final response = await http.get(url, headers: ApiConstants.headers);
     if (response.statusCode == 200) {
       // Handle successful response
       final data = jsonDecode(response.body);
-      return List.from(data['results'])
-          .map((elements) => MovieModel.fromJson(elements))
-          .toList();
+      return List.from(
+        data['results'],
+      ).map((elements) => MovieModel.fromJson(elements)).toList();
       // If you want to return a single MovieModel, you can modify this accordingly.
       debugPrint("Movies fetched successfully: $data");
     } else {
@@ -30,20 +26,18 @@ class ApiService {
       throw Exception("Failed to load movies");
     }
   }
+
   Future<List<MovieModel>> fetchTvShows({int page = 1}) async {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/movie/popular?language=en-US&$page",
     );
-    final response = await http.get(
-      url,
-      headers: ApiConstants.headers,
-    );
+    final response = await http.get(url, headers: ApiConstants.headers);
     if (response.statusCode == 200) {
       // Handle successful response
       final data = jsonDecode(response.body);
-      return List.from(data['results'])
-          .map((elements) => MovieModel.fromJson(elements))
-          .toList();
+      return List.from(
+        data['results'],
+      ).map((elements) => MovieModel.fromJson(elements)).toList();
       // If you want to return a single MovieModel, you can modify this accordingly.
       debugPrint("Movies fetched successfully: $data");
     } else {
@@ -57,10 +51,7 @@ class ApiService {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/movie/$movieId/videos?language=en-US",
     );
-    final response = await http.get(
-      url,
-      headers: ApiConstants.headers,
-    );
+    final response = await http.get(url, headers: ApiConstants.headers);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -68,7 +59,7 @@ class ApiService {
       // TMDb returns multiple videos, we filter for YouTube trailers
       final results = data['results'] as List<dynamic>;
       final trailer = results.firstWhere(
-            (v) => v['site'] == 'YouTube' && v['type'] == 'Trailer',
+        (v) => v['site'] == 'YouTube' && v['type'] == 'Trailer',
         orElse: () => null,
       );
 
@@ -82,23 +73,17 @@ class ApiService {
     }
   }
 
-
-
-
   Future<List<MovieModel>> fetchTrendingMovies() async {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/trending/movie/day?language=en-US",
     );
-    final response = await http.get(
-      url,
-      headers: ApiConstants.headers,
-    );
+    final response = await http.get(url, headers: ApiConstants.headers);
     if (response.statusCode == 200) {
       // Handle successful response
       final data = jsonDecode(response.body);
-      return List.from(data['results'])
-          .map((elements) => MovieModel.fromJson(elements))
-          .toList();
+      return List.from(
+        data['results'],
+      ).map((elements) => MovieModel.fromJson(elements)).toList();
       debugPrint("Movies fetched successfully: $data");
     } else {
       // Handle error response
@@ -112,16 +97,13 @@ class ApiService {
     final url = Uri.parse(
       "${ApiConstants.baseUrl}/genre/movie/list?language=en",
     );
-    final response = await http.get(
-      url,
-      headers: ApiConstants.headers,
-    );
+    final response = await http.get(url, headers: ApiConstants.headers);
     if (response.statusCode == 200) {
       // Handle successful response
       final data = jsonDecode(response.body);
-      return List.from(data['genres'])
-          .map((elements) => MovieGenres.fromJson(elements))
-          .toList();
+      return List.from(
+        data['genres'],
+      ).map((elements) => MovieGenres.fromJson(elements)).toList();
       // If you want to return a single MovieModel, you can modify this accordingly.
       debugPrint("Movies fetched successfully: $data");
     } else {
@@ -132,25 +114,41 @@ class ApiService {
   }
 
   Future<List<MovieGenres>> fetchTvGenres() async {
-    final url = Uri.parse(
-      "${ApiConstants.baseUrl}/genre/tv/list?language=en",
-    );
-    final response = await http.get(
-      url,
-      headers: ApiConstants.headers,
-    );
+    final url = Uri.parse("${ApiConstants.baseUrl}/genre/tv/list?language=en");
+    final response = await http.get(url, headers: ApiConstants.headers);
     if (response.statusCode == 200) {
       // Handle successful response
       final data = jsonDecode(response.body);
-      return List.from(data['genres'])
-          .map((elements) => MovieGenres.fromJson(elements))
-          .toList();
+      return List.from(
+        data['genres'],
+      ).map((elements) => MovieGenres.fromJson(elements)).toList();
       // If you want to return a single MovieModel, you can modify this accordingly.
       debugPrint("Movies fetched successfully: $data");
     } else {
       // Handle error response
       debugPrint("Failed to fetch movie genres: ${response.statusCode}");
       throw Exception("Failed to load movie genres");
+    }
+  }
+
+  //search movies
+  Future<List<MovieModel>> searchMovies(String query) async {
+    final url = Uri.parse(
+      "${ApiConstants.baseUrl}/search/movie?query=$query&language=en-US&page=1&include_adult=false",
+    );
+    final response = await http.get(url, headers: ApiConstants.headers);
+    if (response.statusCode == 200) {
+      // Handle successful response
+      final data = jsonDecode(response.body);
+      return List.from(
+        data['results'],
+      ).map((elements) => MovieModel.fromJson(elements)).toList();
+      // If you want to return a single MovieModel, you can modify this accordingly.
+      debugPrint("Search results fetched successfully: $data");
+    } else {
+      // Handle error response
+      debugPrint("Failed to fetch search results: ${response.statusCode}");
+      throw Exception("Failed to load search results");
     }
   }
 }

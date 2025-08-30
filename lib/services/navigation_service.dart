@@ -26,10 +26,11 @@ class NavigationService {
     ScaffoldMessenger.of(context).showSnackBar(snackBarWidget);
   }
 
-  Future<void> showDialog(BuildContext? context, Widget widget) async {
+  Future<void> showMyDialog(Widget widget, {BuildContext? context}) async {
     await showAdaptiveDialog(
       context: context ?? navigatorKey.currentContext!,
-      builder: (context) => widget,
+      builder: (_) => widget,
     );
   }
+
 }

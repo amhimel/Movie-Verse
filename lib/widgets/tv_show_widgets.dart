@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:movie_verse/widgets/video_play_dialog.dart';
 import 'package:provider/provider.dart';
 import '../constants/my_app_constants.dart';
 import '../constants/my_app_icons.dart';
 import '../models/movie_model.dart';
+import '../provider/movie_provider.dart';
 import '../screens/movie_detail_screen.dart';
 import '../services/init_getIt.dart';
 import '../services/navigation_service.dart';
@@ -21,6 +23,7 @@ class TvShowWidgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final moviesModelProvider = Provider.of<MovieModel>(context);
+    final movieProvider = Provider.of<MovieProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -61,6 +64,17 @@ class TvShowWidgets extends StatelessWidget {
                           size: 50,
                           color: Colors.red,
                         ),
+                        onWatchTrailer: () async {
+                          final videoId = await movieProvider.getMovieTrailer(moviesModelProvider.id!);
+                          if (videoId != null && context.mounted) {
+                            getIt<NavigationService>().showMyDialog( VideoPlayDialog(videoId: videoId));
+
+                          } else {
+                            getIt<NavigationService>().showSnackBar(Text("No trailer available"));
+
+                          }
+
+                        },
                       ),
                     ),
                   ),

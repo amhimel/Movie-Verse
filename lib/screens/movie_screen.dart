@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:movie_verse/constants/my_app_colors.dart';
+import 'package:movie_verse/screens/book_now_screen.dart';
 import 'package:movie_verse/widgets/video_play_dialog.dart';
 import 'package:movie_verse/widgets/popular_movie_card.dart';
 import 'package:provider/provider.dart';
@@ -132,9 +133,7 @@ class _MovieScreenState extends State<MovieScreen> {
                                     }
                                   },
                                   onBook: () {
-                                    getIt<NavigationService>().showSnackBar(
-                                      Text("Booked: ${movie.title}"),
-                                    );
+                                    getIt<NavigationService>().navigate(BookNowScreen());
                                   },
                                 ),
                               ),

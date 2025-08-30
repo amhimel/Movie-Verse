@@ -10,6 +10,9 @@ class MoviesRepo {
   Future<List<MovieModel>> fetchMovies({int page = 1}) async {
     return await _apiService.fetchMovies(page: page);
   }
+  Future<List<MovieModel>> searchMovies({String? query}) async {
+    return await _apiService.searchMovies(query!);
+  }
   Future<List<MovieModel>> fetchTvShows({int page = 1}) async {
     return await _apiService.fetchTvShows(page: page);
   }
@@ -28,6 +31,7 @@ class MoviesRepo {
   Future<String?> fetchMovieTrailer(int movieId) async {
     return await _apiService.fetchMovieTrailer(movieId);
   }
+
 
 
 }

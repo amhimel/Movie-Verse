@@ -2,16 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/my_app_colors.dart';
+import '../services/init_getIt.dart';
+import '../services/navigation_service.dart';
 
-class CachedImageWidget extends StatelessWidget {
-  const CachedImageWidget({
+class CachedDetailImageWidget extends StatelessWidget {
+  const CachedDetailImageWidget({
     super.key,
     required this.imageUrl,
     this.width,
     this.height,
     this.fit,
     required this.errorWidget,
-    required this.onWatchTrailer,
     //required this.videoId,
   });
 
@@ -20,7 +21,7 @@ class CachedImageWidget extends StatelessWidget {
   final double? height;
   final BoxFit? fit;
   final Widget Function(BuildContext context, String url, dynamic error) errorWidget;
-  final VoidCallback onWatchTrailer;
+
 
 
   @override
@@ -36,30 +37,6 @@ class CachedImageWidget extends StatelessWidget {
           fit: fit ?? BoxFit.cover,
           imageUrl: imageUrl,
           errorWidget: errorWidget,
-        ),
-
-        // Watch Trailer button
-        Positioned(
-          right: 5,
-          bottom: 10,
-          child: IconButton(
-            onPressed:  onWatchTrailer ?? null,
-            icon: const Icon(
-              Icons.play_arrow,
-              size: 18,
-              color: Colors.white,
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: MyAppColors.darkSecondaryColor,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 6,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          ),
         ),
       ],
     );

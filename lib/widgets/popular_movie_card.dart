@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../constants/my_app_constants.dart';
 import '../constants/my_app_icons.dart';
 import '../models/movie_model.dart';
+import '../provider/movie_provider.dart';
 import '../services/init_getIt.dart';
 import '../services/navigation_service.dart';
 import 'cached_image_widget.dart';
@@ -17,6 +18,7 @@ class PopularMovieCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final moviesModelProvider = Provider.of<MovieModel>(context);
+    final movieProvider = Provider.of<MovieProvider>(context);
     return InkWell(
       onTap: (){
         getIt<NavigationService>().navigate(MovieDetailScreen(movieModel: moviesModelProvider));
@@ -32,6 +34,17 @@ class PopularMovieCardWidget extends StatelessWidget {
               fit: BoxFit.cover,
               errorWidget: (_, __, ___) =>
               const Icon(Icons.broken_image, size: 60, color: Colors.white),
+              onWatchTrailer: () async {
+                final videoId = await movieProvider.getMovieTrailer(moviesModelProvider.id!);
+                if (videoId != null && context.mounted) {
+                  getIt<NavigationService>().showMyDialog(VideoPlayDialog(videoId: videoId));
+
+                } else {
+                  getIt<NavigationService>().showSnackBar(Text("No trailer available"));
+
+                }
+
+              },
             ),
           ),
 

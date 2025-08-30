@@ -12,18 +12,18 @@ import 'cached_image_widget.dart';
 import 'favorite_btn_widget.dart';
 import 'genres_widget.dart';
 
-class FavMovieWidgets extends StatelessWidget {
-  const FavMovieWidgets({
+class SearchResultWidget extends StatelessWidget {
+  const SearchResultWidget({
     super.key,
-    //required this.movieModel
+    required this.movieModel,
   });
 
-  //final MovieModel movieModel;
+  final MovieModel movieModel;
 
   @override
   Widget build(BuildContext context) {
-    final moviesModelProvider = Provider.of<MovieModel>(context);
-    final movieProvider = Provider.of<MovieProvider>(context);
+    final movieProvider = Provider.of<MovieProvider>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -32,14 +32,8 @@ class FavMovieWidgets extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12.0),
           onTap: () {
-            // TODO: Navigate To The Movie Details Screen
             getIt<NavigationService>().navigate(
-              ChangeNotifierProvider.value(
-                value: moviesModelProvider,
-                child: MovieDetailScreen(
-                  movieModel: moviesModelProvider
-                ),
-              ),
+              MovieDetailScreen(movieModel: movieModel),
             );
           },
           child: Padding(
@@ -47,15 +41,14 @@ class FavMovieWidgets extends StatelessWidget {
             child: IntrinsicWidth(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  //image border radius implementation
+                  // Image with Hero
                   Hero(
-                    tag: moviesModelProvider.id!,
+                    tag: movieModel.id!,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: CachedImageWidget(
-                        imageUrl: '${MyAppConstants.imagePath}${moviesModelProvider.backdropPath!}',
+                        imageUrl: '${MyAppConstants.imagePath}${movieModel.backdropPath ?? movieModel.posterPath}',
                         width: 100,
                         height: 150,
                         fit: BoxFit.cover,
@@ -65,64 +58,63 @@ class FavMovieWidgets extends StatelessWidget {
                           color: Colors.red,
                         ),
                         onWatchTrailer: () async {
-                          final videoId = await movieProvider.getMovieTrailer(moviesModelProvider.id!);
+                          final videoId = await movieProvider.getMovieTrailer(movieModel.id!);
                           if (videoId != null && context.mounted) {
-                            getIt<NavigationService>().showMyDialog(VideoPlayDialog(videoId: videoId));
-
+                            getIt<NavigationService>().showMyDialog(
+                              VideoPlayDialog(videoId: videoId),
+                            );
                           } else {
-                            getIt<NavigationService>().showSnackBar(Text("No trailer available"));
-
+                            getIt<NavigationService>().showSnackBar(
+                              const Text("No trailer available"),
+                            );
                           }
-
                         },
                       ),
                     ),
                   ),
+                  const SizedBox(width: 10),
 
-                  SizedBox(width: 10),
+                  // Info Column
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          moviesModelProvider.originalTitle!,
+                          movieModel.originalTitle ?? movieModel.title ?? "Unknown",
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(Icons.star, color: Colors.amber, size: 20),
-                            SizedBox(width: 5),
-                            Text("${moviesModelProvider.voteAverage?.toStringAsFixed(1)}/10"
+                            const Icon(Icons.star, color: Colors.amber, size: 20),
+                            const SizedBox(width: 5),
+                            Text(
+                              "${movieModel.voteAverage?.toStringAsFixed(1) ?? '0.0'}/10",
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        // TODO: Add the genres widget
-                        GenresListWidget(
-                          movieModel: moviesModelProvider,
-                        ),
+                        const SizedBox(height: 8),
+                        GenresListWidget(movieModel: movieModel),
+                        const SizedBox(height: 8),
                         Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Icon(
                               MyAppIcons.iconWatchLaterOutlined,
-                              size: 20,
+                              size: 18,
                               color: Theme.of(context).colorScheme.secondary,
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              moviesModelProvider.releaseDate!,
-                              style: TextStyle(color: Colors.grey),
+                              movieModel.releaseDate ?? "",
+                              style: const TextStyle(color: Colors.grey),
                             ),
                             const Spacer(),
-                            FavoriteBtnWidget(
-                              movieModel: moviesModelProvider,
-                            ),
+                            FavoriteBtnWidget(movieModel: movieModel),
                           ],
                         ),
                       ],

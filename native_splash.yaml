@@ -1,0 +1,15 @@
+flutter_native_splash:
+  # platform.
+  android: true
+  ios: true
+  web: false
+  color: "#121011"
+  image: "assets/movie_verse.png"
+  #branding: assets/dart.png
+  #branding_mode: bottom
+
+  # Following are specific parameters for Android 12+.
+  android_12:
+    color: "#121011"
+    image: "assets/movie_verse.png"
+

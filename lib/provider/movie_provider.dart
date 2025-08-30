@@ -27,6 +27,10 @@ class MovieProvider with ChangeNotifier {
   String _fetchMoviesError = '';
   String get fetchMoviesError => _fetchMoviesError;
 
+  // ✅ For search
+  List<MovieModel> _searchResults = [];
+  List<MovieModel> get searchResults => _searchResults;
+
   final MoviesRepo _moviesRepository = getIt<MoviesRepo>();
 
   Future<void> getMovies() async {
@@ -73,6 +77,36 @@ class MovieProvider with ChangeNotifier {
 
   Future<String?> getMovieTrailer(int movieId) async {
     return await _moviesRepository.fetchMovieTrailer(movieId);
+  }
+
+  // ✅ New: Search movies
+  Future<void> searchMovies(String query) async {
+    if (query.isEmpty) {
+      _searchResults = [];
+      notifyListeners();
+      return;
+    }
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _searchResults = await _moviesRepository.searchMovies(query: query);
+      _fetchMoviesError = "";
+    } catch (error) {
+      log("An error occurred in searchMovies $error");
+      _fetchMoviesError = error.toString();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Optional: clear results (for search bar clear button)
+  void clearSearch() {
+    _searchResults = [];
+    notifyListeners();
   }
 
 

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:movie_verse/screens/movie_search_screen.dart';
 
 import '../constants/my_app_colors.dart';
 import '../constants/my_app_icons.dart';
 import '../screens/favorite_screen.dart';
 import '../screens/movie_screen.dart';
 import '../screens/tv_series_screen.dart';
+import '../services/init_getIt.dart';
+import '../services/navigation_service.dart';
 import 'custom_appbar.dart';
 
 class CustomBottomNav extends StatefulWidget {
@@ -42,6 +45,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
           InkWell(
             onTap: (){
               // Action for search button
+              getIt<NavigationService>().navigate(MovieSearchScreen());
             },
             child: Container(
               margin: const EdgeInsets.only(right: 10),
@@ -53,6 +57,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
                 icon: Icon(MyAppIcons.search, color: Colors.white),
                 onPressed: () {
                   // Action for search button
+                  getIt<NavigationService>().navigate(MovieSearchScreen());
                 },
               ),
             ),
