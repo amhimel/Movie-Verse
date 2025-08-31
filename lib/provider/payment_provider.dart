@@ -1,9 +1,8 @@
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
-import '../constants/stripe_keys.dart';
 
 class PaymentProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -13,9 +12,10 @@ class PaymentProvider with ChangeNotifier {
   String get paymentStatus => _paymentStatus;
 
   Future<void> makePayment(BuildContext context, {int amount = 5000}) async {
+    final publishableKey = dotenv.env['STRIPE_PK_TEST_KEY'] ?? 'NOT_SET';
     debugPrint("🚀 === STARTING PAYMENT PROCESS ===");
     debugPrint("💰 Amount: $amount cents (\$${amount / 100})");
-    debugPrint("🔑 Using publishable key: ${StripeKeys.publishableKey.substring(0, 20)}...");
+    debugPrint("🔑 Using publishable key: ${publishableKey.substring(0, 20)}...");
 
     _isLoading = true;
     _paymentStatus = '';
@@ -35,7 +35,7 @@ class PaymentProvider with ChangeNotifier {
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentData['client_secret'],
           merchantDisplayName: 'Movie Verse',
-          //style: ThemeMode.dark,
+          style: ThemeMode.dark,
           appearance: const PaymentSheetAppearance(
             colors: PaymentSheetAppearanceColors(
               primary: Color(0xFFEB2F3D),
@@ -115,6 +115,8 @@ class PaymentProvider with ChangeNotifier {
 
   // Create Payment Intent
   Future<Map<String, dynamic>> _createPaymentIntent(int amount) async {
+    final secretKey = dotenv.env['STRIPE_SK_TEST_KEY'] ?? '';
+    debugPrint("🔧 Creating payment intent with secret key (hidden)...");
     debugPrint("🔧 Creating payment intent with Stripe API...");
     debugPrint("💵 Amount: $amount, Currency: USD");
 
@@ -122,7 +124,7 @@ class PaymentProvider with ChangeNotifier {
       final response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization': 'Bearer ${StripeKeys.secretKey}',
+          'Authorization': 'Bearer $secretKey',
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: {
