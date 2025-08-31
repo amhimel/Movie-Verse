@@ -18,12 +18,10 @@ import 'gradient_button.dart';
 
 class MoviePromoCard extends StatelessWidget {
   final VoidCallback? onWatchTrailer;
-  final VoidCallback? onBook;
 
   const MoviePromoCard({
     super.key,
     this.onWatchTrailer,
-    this.onBook,
   });
 
   @override
@@ -149,21 +147,6 @@ class MoviePromoCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            GradientButton(
-                              text: "Book",
-                              onPressed: onBook,
-                              colors: [Color(0xFF323232), Color(0xFF767676)],
-                              // gradient
-                              borderRadius: BorderRadius.circular(12),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              textStyle: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
                             FavoriteBtnWidget(movieModel: moviesModelProvider),
                           ],
                         ),

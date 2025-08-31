@@ -132,9 +132,7 @@ class _MovieScreenState extends State<MovieScreen> {
                                       );
                                     }
                                   },
-                                  onBook: () {
-                                    getIt<NavigationService>().navigate(BookNowScreen());
-                                  },
+
                                 ),
                               ),
                             );
