@@ -15,7 +15,7 @@ void main() async{
     setUpLocator();
     await dotenv.load(fileName: "assets/.env");
     Stripe.publishableKey = dotenv.get("STRIPE_PK_TEST_KEY");
-    //await Stripe.instance.applySettings();
+    await Stripe.instance.applySettings();
     runApp(const MyApp());
   });
 }

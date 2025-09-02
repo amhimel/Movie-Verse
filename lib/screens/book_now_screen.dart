@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../constants/my_app_colors.dart';
 import '../constants/my_app_constants.dart';
 import '../models/movie_model.dart';
-import '../provider/payment_provider.dart';
+import '../provider/stripe_payment_provider.dart';
 import '../widgets/cached_detail_image_widget.dart';
 
 class BookNowScreen extends StatelessWidget {
@@ -19,7 +19,7 @@ class BookNowScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = Provider.of<PaymentProvider>(context);
+    final paymentProvider = Provider.of<StripePaymentProvider>(context);
     final priceInCents = (ticketPrice * 100).round();
 
     return Scaffold(
